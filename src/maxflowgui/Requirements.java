@@ -23,7 +23,9 @@ public class Requirements extends javax.swing.JFrame {
         
     }
     String info = "";
-
+    StringBuilder infoBuilder = new StringBuilder();
+    int nodeC = 0;
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,6 +73,9 @@ public class Requirements extends javax.swing.JFrame {
         jPanel2.setMinimumSize(new java.awt.Dimension(240, 138));
         jPanel2.setPreferredSize(new java.awt.Dimension(240, 138));
         jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel2MouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jPanel2MouseEntered(evt);
             }
@@ -341,7 +346,7 @@ public class Requirements extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         String text = nodeCount.getText();
-        int nodeC = Integer.parseInt(text);
+        nodeC = Integer.parseInt(text);
         String[] items = new String[nodeC];
         
         char[] alphabet = new char[26];
@@ -390,10 +395,29 @@ public class Requirements extends javax.swing.JFrame {
     private void nodeConnectionBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodeConnectionBtnMouseClicked
         // TODO add your handling code here:
         
+        boolean isSource = jCheckBox1.isEnabled();
+        String src = "";
+        if (isSource){
+            src = "--> Kaynak musluk";
+            jCheckBox1.setVisible(false);
+            jCheckBox1.setEnabled(false);
+        }
+          
+        boolean isSink = jCheckBox1.isEnabled();
+        String sink = "";
+        if (isSink){
+            src = "--> Son musluk\n";
+            jCheckBox2.setVisible(false);
+            jCheckBox2.setEnabled(false);
+        }
+            
+        
         String sItem = NodeSelectComboBox.getSelectedItem().toString();
         
-        StringBuilder infoBuilder = new StringBuilder();
-        infoBuilder.append(sItem + "\n");
+        infoBuilder.append(sItem +" ");
+        infoBuilder.append(src + "\n");
+        infoBuilder.append(sink + "\n");
+        
         infoBuilder.append(jTextField1.getText().toString()+ "\n");
         infoBuilder.append(jTextField2.getText().toString()+ "\n");
         infoBuilder.append(jTextField3.getText().toString()+ "\n");
@@ -401,9 +425,16 @@ public class Requirements extends javax.swing.JFrame {
         
         info = infoBuilder.toString();
         
-        
-        
     }//GEN-LAST:event_nodeConnectionBtnMouseClicked
+
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
+        // TODO add your handling code here:
+        if(!(jCheckBox1.isVisible() && jCheckBox2.isVisible())){
+            System.out.println("Grag oluşturuluyor");
+        }else {
+            System.out.println("Kaynak veya Son musluk seçilmedi");
+        }
+    }//GEN-LAST:event_jPanel2MouseClicked
 
     /**
      * @param args the command line arguments
