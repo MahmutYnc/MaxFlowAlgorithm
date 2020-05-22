@@ -1,0 +1,26 @@
+Musluk A --> Kaynak musluk
+
+B - 11
+C - 12
+
+
+Musluk C 
+
+B - 1
+E - 11
+
+
+Musluk D 
+
+F - 19
+
+
+
+Musluk E 
+
+D - 7
+F - 5
+
+
+Musluk F 
+--> Son musluk

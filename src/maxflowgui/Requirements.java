@@ -20,11 +20,12 @@ public class Requirements extends javax.swing.JFrame {
      */
     public Requirements() {
         initComponents();
-        
     }
     String info = "";
     StringBuilder infoBuilder = new StringBuilder();
     int nodeC = 0;
+    int[][] graph; 
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -139,11 +140,6 @@ public class Requirements extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText("Kaynak Musluk Mu?");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
-            }
-        });
 
         jCheckBox2.setText("Son Musluk Mu ?");
 
@@ -298,9 +294,7 @@ public class Requirements extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 902, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,10 +303,6 @@ public class Requirements extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -358,6 +348,14 @@ public class Requirements extends javax.swing.JFrame {
             items[i] = "Musluk "+ alphabet[i];
         }
         
+        //build graph model
+        graph = new int[nodeC][nodeC];
+        for (int i = 0; i < nodeC; i++) {
+            for (int j = 0; j < nodeC; j++) {
+                graph[i][j] = 0;
+            }            
+        }
+        
         final DefaultComboBoxModel model = new DefaultComboBoxModel(items);
         NodeSelectComboBox.setModel(model);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -392,23 +390,26 @@ public class Requirements extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, info, "Musluk Özellikleri: ", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton3MouseClicked
 
+   
+    
     private void nodeConnectionBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodeConnectionBtnMouseClicked
         // TODO add your handling code here:
-        
-        boolean isSource = jCheckBox1.isEnabled();
+                
+        boolean isSource = jCheckBox1.isSelected();
+        System.out.println("isSource"+ isSource);
         String src = "";
         if (isSource){
             src = "--> Kaynak musluk";
             jCheckBox1.setVisible(false);
-            jCheckBox1.setEnabled(false);
+            jCheckBox1.setSelected(false);
         }
           
-        boolean isSink = jCheckBox1.isEnabled();
+        boolean isSink = jCheckBox2.isSelected();
         String sink = "";
         if (isSink){
-            src = "--> Son musluk\n";
+            sink = "--> Son musluk\n";
             jCheckBox2.setVisible(false);
-            jCheckBox2.setEnabled(false);
+            jCheckBox2.setSelected(false);
         }
             
         
@@ -424,16 +425,28 @@ public class Requirements extends javax.swing.JFrame {
         infoBuilder.append(jTextField4.getText().toString()+ "\n");
         
         info = infoBuilder.toString();
-        
+      
     }//GEN-LAST:event_nodeConnectionBtnMouseClicked
 
+     public void makeGraph( String con ){
+        int[] graphLine = new int[nodeC];
+    }
+    
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
         if(!(jCheckBox1.isVisible() && jCheckBox2.isVisible())){
-            System.out.println("Grag oluşturuluyor");
+            System.out.println("Graph oluşturuluyor");
+            
+            //send all datas to make graph
+            System.out.println(info);
+            makeGraph(info);
+            
         }else {
             System.out.println("Kaynak veya Son musluk seçilmedi");
         }
+        
+        
+        
     }//GEN-LAST:event_jPanel2MouseClicked
 
     /**
