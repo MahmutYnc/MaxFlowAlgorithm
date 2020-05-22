@@ -422,10 +422,10 @@ public class Requirements extends javax.swing.JFrame {
         infoBuilder.append(jTextField1.getText().toString()+ "\n");
         infoBuilder.append(jTextField2.getText().toString()+ "\n");
         infoBuilder.append(jTextField3.getText().toString()+ "\n");
-        infoBuilder.append(jTextField4.getText().toString()+ "\n");
+        infoBuilder.append(jTextField4.getText().toString()+ " *\n");
         
         info = infoBuilder.toString();
-      
+        
     }//GEN-LAST:event_nodeConnectionBtnMouseClicked
 
      public void makeGraph( String con ){
@@ -438,6 +438,7 @@ public class Requirements extends javax.swing.JFrame {
             System.out.println("Graph oluşturuluyor");
             
             //send all datas to make graph
+            info = info .replaceAll("(?m)^[ \t]*\r?\n", "");
             System.out.println(info);
             makeGraph(info);
             
