@@ -6,6 +6,7 @@
 package maxflowgui;
 
 import java.awt.Color;
+import java.util.Arrays;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -422,15 +423,178 @@ public class Requirements extends javax.swing.JFrame {
         infoBuilder.append(jTextField1.getText().toString()+ "\n");
         infoBuilder.append(jTextField2.getText().toString()+ "\n");
         infoBuilder.append(jTextField3.getText().toString()+ "\n");
-        infoBuilder.append(jTextField4.getText().toString()+ " *\n");
+        infoBuilder.append(jTextField4.getText().toString()+ "*\n");
         
         info = infoBuilder.toString();
         
     }//GEN-LAST:event_nodeConnectionBtnMouseClicked
 
-     public void makeGraph( String con ){
-        int[] graphLine = new int[nodeC];
+     // Driver program to test above functions
+    public static int[][] makeGraph (String info)
+    {
+         System.out.println("infoooooooooooooooooo" +  info + "----------------------");
+        int[][] temp;
+        info = "Musluk A --> Kaynak musluk\n" +
+            "B - 6\n" +
+            "C - 6\n" +
+            "*\n" +
+            "Musluk B \n" +
+            "D - 4\n" +
+            "E - 2\n" +
+            "*\n" +
+            "Musluk C \n" +
+            "B - 5\n" +
+            "E - 9\n" +
+            "*\n" +
+            "Musluk D \n" +
+            "F - 4\n" +
+            "G - 7\n" +
+            "*\n" +
+            "Musluk E \n" +
+            "D - 8\n" +
+            "G - 7\n" +
+            "*\n" +
+            "Musluk F \n" +
+            "H - 7\n" +
+            "*\n" +
+            "Musluk G \n" +
+            "F - 11\n" +
+            "H - 4\n" +
+            "*\n" +
+            "Musluk H \n" +
+            "--> Son musluk\n" +
+           "*\r\n" +
+                "";
+
+      
+        String nodes[] = info.split("\\*");
+        String[][] lines = new String[nodes.length][];
+        for(int i = 0; i< nodes.length; i++) {
+            nodes[i] = nodes[i] .replaceAll("(?m)^[ \t]*\r?\n", "");
+            lines[i] = nodes[i].split("\\r?\\n");
+        }
+        System.out.println("node.length : "+nodes.length + "lines[0].length :  "+ lines[0].length);
+        for(int i = 0; i< nodes.length ; i++) {
+            for(int j = 0; j< lines[i].length; j++) {
+                System.out.println(lines[i][j]);
+            }
+        }
+
+        temp = new int[nodes.length -1][nodes.length -1];
+        // Fill each row with 0
+        for(int i = 0; i< temp.length ; i++) {
+            for(int j = 0; j< temp[i].length; j++) {
+                temp[i][j] = 0;
+            }
+
+        }
+
+        //kaynak m� diye kontrol et
+        //de�ilse ba�lant�lar�n� al
+        boolean isSrc = false;
+        boolean isSnk = false;
+
+        System.out.println("temp boyutu : "+ (nodes.length -1));
+        int[] tempAry = new int[nodes.length -1];
+        Arrays.fill(tempAry, new Integer(0));
+
+
+        int[] srcAry = new int[nodes.length -1];
+        Arrays.fill(srcAry, new Integer(0));
+
+        for(int j = 0; j< srcAry.length; j++) {
+            System.out.println(srcAry[j]);
+        }
+
+        char src = 'D';
+        char toWhere;
+        String str = "";
+
+        for(int i = 0; i< nodes.length -2; i++) {
+            //kaynak musluk durumu
+            if (lines[i][0].contains("Kaynak")) {
+
+                //find source index
+                src = lines[i][0].charAt(7);
+                int srcNmb = src -65;
+                System.out.println("kaynak node : "+srcNmb);
+
+                for(int j = 1; j< lines[i].length; j++) {
+
+                    //Find where to connect
+                    str = lines[i][j];
+                    toWhere = str.charAt(0);
+                    int chrNmb = toWhere -65;
+
+                    //connection capacity
+                    str = str.replaceAll("\\D+","");
+
+                    System.out.println(chrNmb + "--" + str);
+
+                    srcAry[chrNmb] = Integer.parseInt(str);
+                }
+                temp[0] = srcAry;
+            }
+            //Son musluk durumu
+			/*else if (lines[i][1].contains("Son")) {
+
+				//find source index
+				src = lines[i][0].charAt(7);
+				int snkNmb = src -65;
+				System.out.println("Son node : "+snkNmb);
+
+				int[] lst = new int[nodes.length -1];
+				Arrays.fill(lst, new Integer(0));
+
+				temp[temp.length -1] = lst;
+			}*/
+            else {
+                //find source index
+                src = lines[i][0].charAt(7);
+                int srcNmb = src -65;
+                Arrays.fill(tempAry, 0);
+                System.out.println("kaynak node : "+srcNmb);
+                for(int j = 1; j< lines[i].length; j++) {
+
+                    //Find where to connect
+                    str = lines[i][j];
+                    toWhere = str.charAt(0);
+                    int chrNmb = toWhere -65;
+
+                    //connection capacity
+                    str = str.replaceAll("\\D+","");
+
+                    System.out.println(chrNmb + "--" + str);
+
+                    if (!str.isEmpty()) {
+                        tempAry[chrNmb] = Integer.parseInt(str);
+                    }
+
+                }
+                System.out.println(i);
+                for (int j = 0; j < tempAry.length; j++) {
+                    System.out.print(tempAry[j] + "\t");
+                    temp[i][j] = tempAry[j];
+                }
+                System.out.println();
+                //temp[i] = tempAry;
+            }
+
+
+        }
+
+        System.out.println("Son durum: \n -----------------------------------------------");
+        for(int i = 0; i< temp.length ; i++) {
+            for(int j = 0; j< temp[i].length; j++) {
+                System.out.print(temp[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+    return temp;
     }
+
+  
     
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
@@ -440,7 +604,7 @@ public class Requirements extends javax.swing.JFrame {
             //send all datas to make graph
             info = info .replaceAll("(?m)^[ \t]*\r?\n", "");
             System.out.println(info);
-            makeGraph(info);
+            int[][] graph = makeGraph(info);
             
         }else {
             System.out.println("Kaynak veya Son musluk seçilmedi");
