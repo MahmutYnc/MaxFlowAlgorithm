@@ -434,7 +434,7 @@ public class Requirements extends javax.swing.JFrame {
     {
          System.out.println("infoooooooooooooooooo" +  info + "----------------------");
         int[][] temp;
-        info = "Musluk A --> Kaynak musluk\n" +
+        /*info = "Musluk A --> Kaynak musluk\n" +
             "B - 6\n" +
             "C - 6\n" +
             "*\n" +
@@ -465,7 +465,7 @@ public class Requirements extends javax.swing.JFrame {
             "--> Son musluk\n" +
            "*\r\n" +
                 "";
-
+*/
       
         String nodes[] = info.split("\\*");
         String[][] lines = new String[nodes.length][];
