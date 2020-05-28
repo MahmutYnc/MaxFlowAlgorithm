@@ -5,7 +5,23 @@
  */
 package maxflowgui;
 
+import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.util.mxSwingConstants;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Arrays;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import static maxflowgui.MaxFlow.findGraph;
+import org.jgrapht.ext.JGraphXAdapter;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 /**
  *
@@ -19,35 +35,41 @@ public class Graf extends javax.swing.JFrame {
     private int nodeCount;
     private String[] nodeNames;
     private String source, sink;
-    private int[][] matrix;
+    private static int[][] matrix;
+    public String information;
+    
+    public int maxResult = 0;
+    public String minResult = "";
     
     //My attributes
     boolean[] isVisited;
     final static int startX = 40, startY = 250, addX = 100, addY = 100, srcY = 300;
     final static int WIDTH = 40, HEIGHT = 30;
     
-    //Yorum Satırı olmalı
+    JPanel pane;
+    JButton maxFlowBtn, mincutBtn;
+    JTextField maxFlowRes;
+    JTextArea minCutEdges;
     
-    public Graf() {
-        
-        initComponents();
-        
-    }
+    MaxFlow m = new MaxFlow(); 
     
-    public Graf(int nodeCount, String[] nodeNames, int[][] connectionMatrix) {
+    public Graf(int nodeCount, String[] nodeNames,int[][] matrix, String information) {
         this.nodeCount = nodeCount;
         this.nodeNames = nodeNames;
-        this.matrix = connectionMatrix;
+        this.information = information;
+        this.matrix = matrix;
         
+        setTitle("Max Flow Algorithm");
         initComponents();
-        
+        setVisible(true);
  
         
-        createNodes(connectionMatrix, nodeNames);
+        createNodes2(matrix, nodeNames);
+        this.add(pane);
+        
     }
     private JButton buttons[];
     
-   
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,34 +80,17 @@ public class Graf extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(230, 230, 250));
-        jPanel1.setMinimumSize(new java.awt.Dimension(904, 640));
-        jPanel1.setPreferredSize(new java.awt.Dimension(904, 640));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 904, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 904, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 640, Short.MAX_VALUE)
         );
 
         pack();
@@ -94,64 +99,148 @@ public class Graf extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Graf.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Graf.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Graf.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Graf.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    static int[][] graph = matrix;
+    
+    public static class MyEdge extends DefaultWeightedEdge {
+        @Override
+        public String toString() {
+            return String.valueOf(getWeight());           
         }
-        //</editor-fold>
-       
+     
+    }
+    public void createNodes2 (int[][] g, String[] vNames){
         
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                //To Delete later 
-                int s = 3;
-                String[] arr = {"A", "B", "C"};
-                // using for loop
-                int[][] board = new int[3][3];
-                for (int i = 0; i < board.length; i++) {
-                    for (int j = 0; j < board[i].length; j++) {
-                        board[i][j] = i + j;
+            //Create graph model
+            SimpleDirectedWeightedGraph<String, MyEdge>  graph = 
+            new SimpleDirectedWeightedGraph<>
+            (MyEdge.class); 
+            
+            //count edges of the graph
+            int edgeCount = 0;
+            for (int i = 0; i < g.length; i++) {
+                for (int j = 0; j < g[i].length; j++) {
+                    if(g[i][j] != 0){
+                        edgeCount++;
                     }
                 }
-                   int graph[][] =new int[][] { {0, 16, 13, 0, 0, 0}, 
-                                                {0, 0, 10, 12, 0, 0}, 
-                                                {0, 4, 0, 0, 14, 0}, 
-                                                {0, 0, 9, 0, 0, 20}, 
-                                                {0, 0, 0, 7, 0, 4}, 
-                                                {0, 0, 0, 0, 0, 0}
-                                               }; 
+            }
+            //Create edge array 
+            MyEdge[] edge = new MyEdge[edgeCount];
+            
+            for (int i = 0; i < g.length; i++) {
+                String str = "Musluk" + (char)(65 + i);
+                graph.addVertex(str);
+            }
+    
+            
+             
+             int k = 0;
+             for (int i = 0; i < g.length; i++) {
+                for (int j = 0; j < g[i].length; j++) {
+                    if(g[i][j] != 0){
+                        
+                        String from = "Musluk" + (char)(65 + i);
+                        String to = "Musluk" + (char)(65 + j);
+                        
+                        edge[k] = graph.addEdge(from, to);
+                        graph.setEdgeWeight(edge[k], g[i][j] );
+                        k++;
+                    }
+                }
+            }
+            
+
+        System.out.println("Shortest path from vertex1 to vertex5:");
+           
+
+        
+        mxSwingConstants.EDGE_SELECTION_COLOR = Color.GREEN;
+        mxSwingConstants.VERTEX_SELECTION_COLOR = Color.BLUE;
+        
+
+        JGraphXAdapter<String, MyEdge> graphAdapter = 
+                new JGraphXAdapter<>(graph);
+
+        mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+        
+        layout.execute(graphAdapter.getDefaultParent());
                 
-                
-               
-                new Graf(s, arr, graph).setVisible(true);
+        
+        System.out.println(graphAdapter.isEdgeLabelsMovable());
+                        
+        
+        pane = new JPanel();
+        pane.setLayout(null);
+        pane.setBackground(new java.awt.Color(230, 230, 250));
+        pane.setSize(new java.awt.Dimension(904, 640));
+        
+        
+        mxGraphComponent mxi = new mxGraphComponent(graphAdapter);
+        mxi.setPreferredSize(new java.awt.Dimension(600, 300));
+        mxi.setBounds(100, 100, 804, 300);
+        mxi.setLocation(40, 100);
+        pane.add(mxi);
+        
+        
+        //MaxFlow Button and algorithm
+        maxFlowBtn = new JButton("Max-Flow");
+        maxFlowBtn.setBounds(100, 500, WIDTH+40, HEIGHT);
+        //set on action func here
+        maxFlowBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                maxFlowBtnMouseClicked(evt);
             }
         });
-    }
-    
-    public void twoDtoGraph(int[][] graph) {
+        pane.add(maxFlowBtn);
+        
+        //Result of the maxFlow algorithm to display
+        maxFlowRes = new JTextField();
+        maxFlowRes.setBounds(200, 500, WIDTH+40, HEIGHT);
+        maxFlowRes.setBackground(new java.awt.Color(230, 230, 250));
+        maxFlowRes.setEditable(false);
+        pane.add(maxFlowRes);
+        
+        
+        //Min-Cut Button and algorithm
+        mincutBtn = new JButton("Min-Cut");
+        mincutBtn.setBounds(604, 500, WIDTH+40, HEIGHT);
+        //set on action func here
+        mincutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mincutBtnMouseClicked(evt);
+            }
+        });
+        pane.add(mincutBtn);
+        
+        //Result of the maxFlow algorithm to display
+        minCutEdges = new JTextArea();
+        minCutEdges.setBounds(704, 500, WIDTH*3, HEIGHT*3);
+        minCutEdges.setBackground(new java.awt.Color(230, 230, 250));
+        minCutEdges.setEditable(false);
+        pane.add(minCutEdges);
         
     }
     
-    public void createNodes(int[][] graph, String[] str) {
+    private void maxFlowBtnMouseClicked(java.awt.event.MouseEvent evt) {
+
+        System.out.println(Arrays.deepToString(matrix).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+        
+        maxResult = m.fordFulkerson(matrix, 0, matrix.length-1, nodeCount);
+	System.out.println("The maximum possible flow is " + maxResult); 
+        maxFlowRes.setText("-->"+maxResult);
+    }
+    private void mincutBtnMouseClicked(java.awt.event.MouseEvent evt) {                                      
+        
+   	System.out.println(Arrays.deepToString(matrix).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+       
+        MinCut miny = new MinCut();
+	minResult = miny.minCut(matrix, 0, matrix.length-1); 
+        System.out.println("Edges between these Vertexes should be cut for Min - Cut algorithm: \n" + minResult); 
+        minCutEdges.setText(minResult);
+    }  
+    /*
+    //My own graph-builder
+    public void createNodes (int[][] graph, String[] str) {
         //remove later
         buttons = new JButton[graph.length];
         isVisited = new boolean[graph.length];
@@ -203,9 +292,8 @@ public class Graf extends javax.swing.JFrame {
         buttons[graph.length - 1] = btn;
         jPanel1.add(btn);
         isVisited[graph.length-1] = true;
-    }
+    }*/
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -12,30 +12,35 @@ package maxflowgui;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
-    import org.jgrapht.*;
-    import org.jgrapht.alg.*;
-    import org.jgrapht.graph.*;
-    import java.util.List;
+import com.mxgraph.swing.util.mxSwingConstants;
+
+import org.jgrapht.graph.*;
+
 import javax.swing.JFrame;
 import org.jgrapht.ext.JGraphXAdapter;
 
+import java.awt.Color;
+import javax.swing.JPanel;
+
+
+
 
     public class Graph {
-        
+
     public static class MyEdge extends DefaultWeightedEdge {
         @Override
         public String toString() {
-            return String.valueOf(getWeight());
+            return String.valueOf(getWeight());           
         }
+     
     }
+    
         public static void main(String args[]) {
 
             SimpleDirectedWeightedGraph<String, MyEdge>  graph = 
-            new SimpleDirectedWeightedGraph<String, MyEdge>
+            new SimpleDirectedWeightedGraph<>
             (MyEdge.class); 
             
-            SimpleDirectedWeightedGraph<String, MyEdge> gi = 
-            new SimpleDirectedWeightedGraph<String, MyEdge>(MyEdge.class);
             
             int g[][] =new int[][] {            {0, 16, 13, 0, 0, 0}, 
                                                 {0, 0, 10, 12, 0, 0}, 
@@ -64,21 +69,31 @@ import org.jgrapht.ext.JGraphXAdapter;
                     }
                 }
             }
+            
 
-            System.out.println("Shortest path from vertex1 to vertex5:");
+        System.out.println("Shortest path from vertex1 to vertex5:");
            
-        JFrame frame = new JFrame("DemoGraph");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       
 
         
+        mxSwingConstants.EDGE_SELECTION_COLOR = Color.GREEN;
+        mxSwingConstants.VERTEX_SELECTION_COLOR = Color.BLUE;
         
+
         JGraphXAdapter<String, MyEdge> graphAdapter = 
-                new JGraphXAdapter<String, MyEdge>(graph);
+                new JGraphXAdapter<>(graph);
 
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
+        
+        JFrame frame = new JFrame("DemoGraph");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel pane = new JPanel();
+        System.out.println(graphAdapter.isEdgeLabelsMovable());
 
-        frame.add(new mxGraphComponent(graphAdapter));
+        
+        pane.add(new mxGraphComponent(graphAdapter));
+        frame.add(pane);
 
         frame.pack();
         frame.setLocationByPlatform(true);

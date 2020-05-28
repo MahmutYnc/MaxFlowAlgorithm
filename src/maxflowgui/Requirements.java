@@ -26,7 +26,7 @@ public class Requirements extends javax.swing.JFrame {
     StringBuilder infoBuilder = new StringBuilder();
     int nodeC = 0;
     int[][] graph; 
-    
+    String[] items;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -338,7 +338,7 @@ public class Requirements extends javax.swing.JFrame {
         
         String text = nodeCount.getText();
         nodeC = Integer.parseInt(text);
-        String[] items = new String[nodeC];
+        items = new String[nodeC];
         
         char[] alphabet = new char[26];
         for(int i = 0; i < 26; i++){
@@ -605,6 +605,10 @@ public class Requirements extends javax.swing.JFrame {
             info = info .replaceAll("(?m)^[ \t]*\r?\n", "");
             System.out.println(info);
             int[][] graph = makeGraph(info);
+            
+            Graf gii;
+            gii = new Graf(graph.length, items, graph, info);
+            dispose();
             
         }else {
             System.out.println("Kaynak veya Son musluk seçilmedi");

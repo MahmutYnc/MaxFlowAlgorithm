@@ -18,13 +18,13 @@ import java.util.*;
 
 public class MaxFlow{
 
-	static final int V = 6; //Number of vertices in graph 
 
 	/* Returns true if there is a path from source 's' to sink 
 	't' in residual graph. Also fills parent[] to store the 
 	path */
 	boolean bfs(int rGraph[][], int s, int t, int parent[]) 
 	{ 
+                int V = rGraph.length;
 		// Create a visited array and mark all vertices as not 
 		// visited 
 		boolean visited[] = new boolean[V]; 
@@ -33,13 +33,13 @@ public class MaxFlow{
 
 		// Create a queue, enqueue source vertex and mark 
 		// source vertex as visited 
-		LinkedList<Integer> queue = new LinkedList<Integer>(); 
+		LinkedList<Integer> queue = new LinkedList<>(); 
 		queue.add(s); 
 		visited[s] = true; 
 		parent[s]=-1; 
 
 		// Standard BFS Loop 
-		while (queue.size()!=0) 
+		while (!queue.isEmpty()) 
 		{ 
 			int u = queue.poll(); 
 
@@ -60,7 +60,7 @@ public class MaxFlow{
 	} 
 
 	// Returns tne maximum flow from s to t in the given graph 
-	int fordFulkerson(int graph[][], int s, int t) 
+	int fordFulkerson(int graph[][], int s, int t, int V) 
 	{ 
 		int u, v; 
 
@@ -118,28 +118,7 @@ public class MaxFlow{
     public static int[][] findGraph (String string)
     {
         int[][] temp;
-        String info = "Musluk A --> Kaynak musluk\r\n" +
-                "B - 11\r\n" +
-                "C - 12\r\n" +
-                "*\r\n" +
-                "Musluk B \r\n" +
-                "D - 12\r\n" +
-                "*\r\n" +
-                "Musluk C \r\n" +
-                "B - 1\r\n" +
-                "E - 11\r\n" +
-                "*\r\n" +
-                "Musluk D \r\n" +
-                "F - 19\r\n" +
-                "*\r\n" +
-                "Musluk E \r\n" +
-                "D - 7\r\n" +
-                "F - 5\r\n" +
-                "*\r\n" +
-                "Musluk F \r\n" +
-                "--> Son musluk\r\n" +
-                "*\r\n" +
-                "";
+        String info = string;
 
         String nodes[] = info.split("\\*");
         String[][] lines = new String[nodes.length][];
@@ -155,13 +134,12 @@ public class MaxFlow{
         }
 
         temp = new int[nodes.length -1][nodes.length -1];
-        // Fill each row with 0
-        for(int i = 0; i< temp.length ; i++) {
-            for(int j = 0; j< temp[i].length; j++) {
-                temp[i][j] = 0;
+            // Fill each row with 0
+            for (int[] temp1 : temp) {
+                for (int j = 0; j < temp1.length; j++) {
+                    temp1[j] = 0;
+                }
             }
-
-        }
 
         //kaynak m� diye kontrol et
         //de�ilse ba�lant�lar�n� al
@@ -266,19 +244,5 @@ public class MaxFlow{
         }
 
     return temp;
-    }
-
-    public static void main(String[] args) {
-        int[][] graph = findGraph("hahaha");
-        System.out.println(Arrays.deepToString(graph).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
-
-        System.out.println(Arrays.deepToString(graph));
-        
-        MaxFlow m = new MaxFlow(); 
-
-	System.out.println("The maximum possible flow is " + 
-						m.fordFulkerson(graph, 0, 5)); 
-
-
     }
 }
