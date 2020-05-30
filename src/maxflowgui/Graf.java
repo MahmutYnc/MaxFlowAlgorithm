@@ -41,17 +41,17 @@ public class Graf extends javax.swing.JFrame {
     
     public int maxResult = 0;
     public String minResult = "";
-    
-    //My attributes
-    boolean[] isVisited;
-    final static int startX = 40, startY = 250, addX = 100, addY = 100, srcY = 300;
-    final static int WIDTH = 40, HEIGHT = 30;
-    
+
+        //My attributes
+        boolean[] isVisited;
+        final static int startX = 40, startY = 250, addX = 100, addY = 100, srcY = 300;
+        final static int WIDTH = 40, HEIGHT = 30;
+
     JPanel pane;
     JButton maxFlowBtn, mincutBtn;
     JTextField maxFlowRes;
     JTextArea minCutEdges;
-    
+    JTextArea maxPath;
     MaxFlow m = new MaxFlow(); 
     
     public Graf(int nodeCount, String[] nodeNames,int[][] matrix, String information) {
@@ -201,6 +201,13 @@ public class Graf extends javax.swing.JFrame {
         maxFlowRes.setEditable(false);
         pane.add(maxFlowRes);
         
+        //path of the maxFlow algorithm to display
+        maxPath = new JTextArea();
+        maxPath.setBounds(300, 500, WIDTH*7 + 4, HEIGHT*4);
+        maxPath.setBackground(new java.awt.Color(230, 230, 250));
+        maxPath.setEditable(false);
+        pane.add(maxPath);
+        
         
         //Min-Cut Button and algorithm
         mincutBtn = new JButton("Min-Cut");
@@ -229,6 +236,7 @@ public class Graf extends javax.swing.JFrame {
         maxResult = m.fordFulkerson(matrix, 0, matrix.length-1, nodeCount);
 	System.out.println("The maximum possible flow is " + maxResult); 
         maxFlowRes.setText("-->"+maxResult);
+        maxPath.setText(m.getString());
     }
     private void mincutBtnMouseClicked(java.awt.event.MouseEvent evt) {                                      
         

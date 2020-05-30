@@ -58,7 +58,7 @@ public class MaxFlow{
 		// return true, else false 
 		return (visited[t] == true); 
 	} 
-
+        StringBuilder sb = new StringBuilder();
 	// Returns tne maximum flow from s to t in the given graph 
 	int fordFulkerson(int graph[][], int s, int t, int V) 
 	{ 
@@ -82,7 +82,6 @@ public class MaxFlow{
 		int parent[] = new int[V]; 
 
 		int max_flow = 0; // There is no flow initially 
-
 		// Augment the flow while tere is path from source 
 		// to sink 
 		while (bfs(rGraph, s, t, parent)) 
@@ -94,7 +93,10 @@ public class MaxFlow{
 			for (v=t; v!=s; v=parent[v]) 
 			{ 
 				u = parent[v]; 
-				path_flow = Math.min(path_flow, rGraph[u][v]); 
+				path_flow = Math.min(path_flow, rGraph[u][v]);
+                                sb.append("Musluk"+(char)(65+v) +" --" +"-- Musluk"+ (char)(65+u)+" --- Kapasite: " +rGraph[u][v] +"\n");
+                                System.out.println("Musluk"+(char)(65+v) +" --"+ rGraph[u][v] +"-- Musluk"+ (char)(65+u));
+                                        
 			} 
 
 			// update residual capacities of the edges and 
@@ -104,15 +106,21 @@ public class MaxFlow{
 				u = parent[v]; 
 				rGraph[u][v] -= path_flow; 
 				rGraph[v][u] += path_flow; 
+                                //System.out.println("rgragh uv: "+ rGraph[u][v]+ "   rgragh vu: "+ rGraph[v][u]+ "  u : "+u+"  -- path flow : "+ path_flow);
 			} 
 
-			// Add path flow to overall flow 
+			// Add path flow to overall flow
+                        sb.append("-Yol üzerindeki en küçük kapasite (BottleNeck) : " + path_flow + "\n");
+                        System.out.println("-------------Yol üzerindeki en küçük kapasite (BottleNeck) : " + path_flow);
 			max_flow += path_flow; 
 		} 
 
 		// Return the overall flow 
 		return max_flow; 
-	} 
+	}
+        public String getString(){
+            return sb.toString();
+        }
 
     //Driver program to test above functions
     public static int[][] findGraph (String string)
