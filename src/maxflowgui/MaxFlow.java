@@ -12,9 +12,7 @@ package maxflowgui;
 
 // Java program for implementation of Ford Fulkerson algorithm
 import java.util.*;
-        import java.lang.*;
-        import java.io.*;
-        import java.util.LinkedList;
+import java.util.LinkedList;
 
 public class MaxFlow{
 
@@ -95,7 +93,7 @@ public class MaxFlow{
 				u = parent[v]; 
 				path_flow = Math.min(path_flow, rGraph[u][v]);
                                 sb.append("Musluk"+(char)(65+v) +" --" +"-- Musluk"+ (char)(65+u)+" --- Kapasite: " +rGraph[u][v] +"\n");
-                                System.out.println("Musluk"+(char)(65+v) +" --"+ rGraph[u][v] +"-- Musluk"+ (char)(65+u));
+                                System.out.println("Musluk"+(char)(65+v) +" --" +"-- Musluk"+ (char)(65+u)+" --- Kapasite: " +rGraph[u][v]);
                                         
 			} 
 
@@ -122,7 +120,7 @@ public class MaxFlow{
             return sb.toString();
         }
 
-    //Driver program to test above functions
+    //find graph from given string
     public static int[][] findGraph (String string)
     {
         int[][] temp;

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import javax.swing.JButton;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -203,10 +204,12 @@ public class Graf extends javax.swing.JFrame {
         
         //path of the maxFlow algorithm to display
         maxPath = new JTextArea();
-        maxPath.setBounds(300, 500, WIDTH*7 + 4, HEIGHT*4);
+        //maxPath.setBounds(300, 500, WIDTH*7 + 4, HEIGHT*4);
         maxPath.setBackground(new java.awt.Color(230, 230, 250));
         maxPath.setEditable(false);
-        pane.add(maxPath);
+        JScrollPane scroll = new JScrollPane(maxPath);
+        scroll.setBounds(300, 500, WIDTH*7 + 4, HEIGHT*4);    
+        pane.add(scroll);
         
         
         //Min-Cut Button and algorithm
@@ -222,7 +225,7 @@ public class Graf extends javax.swing.JFrame {
         
         //Result of the maxFlow algorithm to display
         minCutEdges = new JTextArea();
-        minCutEdges.setBounds(704, 500, WIDTH*3, HEIGHT*3);
+        minCutEdges.setBounds(704, 500, WIDTH*4, HEIGHT*3);
         minCutEdges.setBackground(new java.awt.Color(230, 230, 250));
         minCutEdges.setEditable(false);
         pane.add(minCutEdges);
